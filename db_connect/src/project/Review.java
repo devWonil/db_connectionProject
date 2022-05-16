@@ -3,6 +3,11 @@ package project;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -23,7 +28,7 @@ import lombok.Data;
 public class Review extends JFrame {
 
 	MovieInfoDao dao;
-	
+
 	private JTextArea textArea;
 	private JTextField textField;
 	private JTextField textField1;
@@ -41,12 +46,12 @@ public class Review extends JFrame {
 	private JScrollPane scrollPane;
 
 	// 영화 테이블
-	String schema[] = { "번호", "이름", "개봉년도", "관객수",  "평점" };
+	String schema[] = { "번호", "이름", "개봉년도", "관객수", "평점" };
 
 	public Review() {
-		
+
 		dao = new MovieInfoDao();
-		
+
 		setTitle("평점/리뷰 작성 페이지 입니다");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(500, 960);
@@ -57,7 +62,7 @@ public class Review extends JFrame {
 		scrollPane = new JScrollPane(table);
 		scrollPane.setBounds(12, 153, 588, 313);
 		scrollPane.setViewportView(table);
-		
+
 		DefaultTableCellRenderer defaultTableCellRenderer = new DefaultTableCellRenderer();
 		defaultTableCellRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 		TableColumnModel columnModel = table.getColumnModel();
@@ -65,7 +70,7 @@ public class Review extends JFrame {
 		for (int i = 0; i < columnModel.getColumnCount(); i++) {
 			columnModel.getColumn(i).setCellRenderer(defaultTableCellRenderer);
 		}
-		
+
 		SelectAll();
 		jPanel = new JPanel();
 		jLabel3 = new JLabel("닉네임");
@@ -89,7 +94,6 @@ public class Review extends JFrame {
 		jPanel.add(jLabel2);
 		jPanel.add(textArea);
 		jPanel.add(btn);
-		
 
 		add(jPanel, FlowLayout.LEFT);
 
@@ -99,7 +103,8 @@ public class Review extends JFrame {
 	private void SelectAll() {
 		for (int i = 0; i < dao.selectAll().size(); i++) {
 			model.addRow(new Object[] { dao.selectAll().get(i).getMovieNumber(), dao.selectAll().get(i).getMovieName(),
-			dao.selectAll().get(i).getReleasedDate(), dao.selectAll().get(i).getAudience(), dao.selectAll().get(i).getStarRating() });
+					dao.selectAll().get(i).getReleasedDate(), dao.selectAll().get(i).getAudience(),
+					dao.selectAll().get(i).getStarRating() });
 		}
 	}
 
@@ -109,9 +114,29 @@ public class Review extends JFrame {
 			// 저장 버튼 누르면
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//System.out.println("평점 / 리뷰 저장완료");
-				ReviewDao rd = new ReviewDao();
-				ReviewList reviewList = new ReviewList();
+				// System.out.println("평점 / 리뷰 저장완료");
+//				ReviewDao rd = new ReviewDao();
+//				ReviewList reviewList = new ReviewList();
+
+				System.out.println(textArea.getText());
+//
+//				Calendar calendar = Calendar.getInstance();
+//				DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+//				String date = dateFormat.format(calendar.getTimeInMillis());
+//
+				String text = textArea.getText();
+				String fileName = textField3.getText() + "의 "+ textField1.getText() + " 리뷰";
+//				// 버퍼는 자기 공간이 다 채워지면 자동으로 전달한다
+//
+				try {
+					BufferedWriter bw = new BufferedWriter(new FileWriter(fileName)); // 임시창고 buffer
+					bw.write(text);
+					bw.flush(); // 강제집행
+					bw.close();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+
 			}
 		});
 	}

@@ -27,19 +27,16 @@ import javax.swing.table.TableColumnModel;
 import lombok.Data;
 
 @Data
-public class MovieInfo extends JFrame implements ItemListener {
+public class ActorInfo extends JFrame implements ItemListener {
 
-	MovieInfoDao dao = new MovieInfoDao();
+	ActorInfoDao dao = new ActorInfoDao();
 
 	// 카테고리 검색
 	private JPanel searchPanel;
-	private JPanel searchPanel2;
 	private TitledBorder categoryBorder;
-	private TitledBorder categoryBorder2;
 
 	// crud
 	private JPanel crudPanel;
-	private JPanel crudPanel2;
 //	private TitledBorder crudBorder;
 
 	private JTabbedPane jTabbedPane;
@@ -49,48 +46,30 @@ public class MovieInfo extends JFrame implements ItemListener {
 //	private JButton deleteButton;
 
 	private JLabel optionLabel;
-	private JLabel optionLabel2;
 	
-	private JRadioButton movieName;
 	private JRadioButton actorName;
-	private JRadioButton releasedDate;
 	private JRadioButton birthYear;
 
-	private JTextField movieNameField;
 	private JTextField actorNameField;
-	private JTextField releasedDateField;
 	private JTextField birthYearField;
 
-	private JButton movieNameButton;
 	private JButton actorNameButton;
-	private JButton releasedDateButton;
 	private JButton birthYearButton;
 
 	private JComboBox comboBox;
-	private JComboBox comboBox2;
 
 	private JButton confirmBotton;
-	private JButton confirmBotton2;
 	
 	// 영화 조회
 	private JTable table;
 	private DefaultTableModel model;
 	private JScrollPane scrollPane;
 	private JPanel mainPanel;
-	
-	// 배우 조회
-	private JTable table2;
-	private DefaultTableModel model2;
-	private JScrollPane scrollPane2;
-	private JPanel mainPanel2;
 
 	// 영화 테이블
-	String schema[] = { "번호", "이름", "개봉년도", "수익", "관객수", "스크린 수", "평점" };
-	
-	// 배우 테이블
-	String schema2[] = { "배우번호", "이름", "출생년도", "키", "몸무게", "배우자"};
+	String schema[] = { "배우번호", "이름", "출생년도", "키", "체중", "배우자"};
 
-	public MovieInfo() {
+	public ActorInfo() {
 
 		setBounds(100, 100, 628, 600);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -111,30 +90,21 @@ public class MovieInfo extends JFrame implements ItemListener {
 
 		//
 		crudPanel = new JPanel();
-		crudPanel2 = new JPanel();
 		crudPanel.setLayout(null);
-		crudPanel2.setLayout(null);
 
 		optionLabel = new JLabel("옵션을 선택하세요");
 		optionLabel.setBounds(180, 3, 200, 30);
 		crudPanel.add(optionLabel);
-		optionLabel2 = new JLabel("옵션을 선택하세요");
-		optionLabel2.setBounds(180, 3, 200, 30);
-		crudPanel2.add(optionLabel2);
 		
 		confirmBotton = new JButton("확인");
 		confirmBotton.setBounds(410, 8, 70, 20);
 		crudPanel.add(confirmBotton);
-		confirmBotton2 = new JButton("확인");
-		confirmBotton2.setBounds(410, 8, 70, 20);
-		crudPanel2.add(confirmBotton2);
 		
 		
 		jTabbedPane = new JTabbedPane();
 		jTabbedPane.setBounds(10, 10, 592, 65);
 		jTabbedPane.setTabPlacement(JTabbedPane.TOP);
-		jTabbedPane.addTab("영화정보", crudPanel);
-		jTabbedPane.addTab("배우정보", crudPanel2);
+		jTabbedPane.add("crud", crudPanel);
 		
 		
 		mainPanel.add(jTabbedPane);
@@ -148,49 +118,25 @@ public class MovieInfo extends JFrame implements ItemListener {
 		mainPanel.add(scrollPane);
 
 		// 라디오 박스
-		movieName = new JRadioButton("이름");
-		movieName.setBounds(80, 27, 50, 12);
-		searchPanel.add(movieName);
-		
 		actorName = new JRadioButton("이름");
 		actorName.setBounds(80, 27, 50, 12);
 		searchPanel.add(actorName);
 
-		releasedDate = new JRadioButton("개봉일");
-		releasedDate.setBounds(80, 67, 70, 12);
-		searchPanel.add(releasedDate);
-		
 		birthYear = new JRadioButton("출생년도");
 		birthYear.setBounds(80, 67, 70, 12);
 		searchPanel.add(birthYear);
 
-		movieNameField = new JTextField("명량");
-		movieNameField.setBounds(180, 20, 230, 26);
-		searchPanel.add(movieNameField);
-		
 		actorNameField = new JTextField("최민식");
 		actorNameField.setBounds(180, 20, 230, 26);
 		searchPanel.add(actorNameField);
 
-		releasedDateField = new JTextField("2014");
-		releasedDateField.setBounds(180, 60, 230, 26);
-		searchPanel.add(releasedDateField);
-		
-		birthYearField = new JTextField("1970");
+		birthYearField = new JTextField("1967");
 		birthYearField.setBounds(180, 60, 230, 26);
 		searchPanel.add(birthYearField);
-		
-		movieNameButton = new JButton("검색");
-		movieNameButton.setBounds(440, 20, 65, 25);
-		searchPanel.add(movieNameButton);
 		
 		actorNameButton = new JButton("검색");
 		actorNameButton.setBounds(440, 20, 65, 25);
 		searchPanel.add(actorNameButton);
-		
-		releasedDateButton = new JButton("검색");
-		releasedDateButton.setBounds(440, 60, 65, 25);
-		searchPanel.add(releasedDateButton);
 		
 		birthYearButton = new JButton("검색");
 		birthYearButton.setBounds(440, 60, 65, 25);
@@ -199,21 +145,15 @@ public class MovieInfo extends JFrame implements ItemListener {
 //		searchButton.addActionListener(this);
 //        releaseDate.addActionListener(this);
 
-		movieName.addItemListener(this);
-		releasedDate.addItemListener(this);
-
 		actorName.addItemListener(this);
 		birthYear.addItemListener(this);
-		
-		movieNameField.setEnabled(false);
-		releasedDateField.setEnabled(false);
-		movieNameButton.setEnabled(false);
-		releasedDateButton.setEnabled(false);	
-		
+
 		actorNameField.setEnabled(false);
-		birthYearField.setEnabled(false);
+		birthYear.setEnabled(false);
 		actorNameButton.setEnabled(false);
-		birthYearButton.setEnabled(false);	
+		birthYear.setEnabled(false);		
+		
+		
 		
 		DefaultTableCellRenderer defaultTableCellRenderer = new DefaultTableCellRenderer();
 		defaultTableCellRenderer.setHorizontalAlignment(SwingConstants.CENTER);
@@ -228,19 +168,10 @@ public class MovieInfo extends JFrame implements ItemListener {
         comboBox = new JComboBox();
         comboBox.setBounds(300, 8, 70, 20);
         crudPanel.add(comboBox);
-        
-        comboBox2 = new JComboBox();
-        comboBox2.setBounds(300, 8, 70, 20);
-        crudPanel2.add(comboBox2);
-        
 //        comboBox.addItem("선택");
         comboBox.addItem("생성");
         comboBox.addItem("수정");
         comboBox.addItem("삭제");
-        
-        comboBox2.addItem("생성");
-        comboBox2.addItem("수정");
-        comboBox2.addItem("삭제");
 
         confirmBotton.addActionListener(new ActionListener() {
 			
@@ -270,6 +201,7 @@ public class MovieInfo extends JFrame implements ItemListener {
 		}
 		
 		for (int i = 0; i < dao.selectAll().size(); i++) {
+			// 여기 확인
 			model.addRow(new Object[] { dao.selectAll().get(i).getMovieNumber(), dao.selectAll().get(i).getMovieName(),
 					dao.selectAll().get(i).getReleasedDate(), dao.selectAll().get(i).getRevenue(),
 					dao.selectAll().get(i).getAudience(), dao.selectAll().get(i).getScreen(),
@@ -282,18 +214,18 @@ public class MovieInfo extends JFrame implements ItemListener {
 	public void itemStateChanged(ItemEvent e1) {
 
 		// 영화 제목 버튼 클릭됨
-		if (e1.getSource() == movieName) {
-			movieNameField.setEnabled(true);
-			movieNameButton.setEnabled(true);
-			releasedDate.setEnabled(false);
+		if (e1.getSource() == actorName) {
+			actorNameField.setEnabled(true);
+			actorNameButton.setEnabled(true);
+			birthYear.setEnabled(false);
 			// 영화 쿼리 뿌림
 
-			movieNameButton.addActionListener(new ActionListener() {
+			actorNameButton.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					if (e.getSource() == movieNameButton) {
-						dao.selectByMovieName(movieNameField.getText());
+					if (e.getSource() == actorNameButton) {
+						dao.selectByActorName(actorNameField.getText());
 
 						if (model.getRowCount() > 0) {
 							for (int i = model.getRowCount() - 1; i > -1; i--) {
@@ -301,38 +233,38 @@ public class MovieInfo extends JFrame implements ItemListener {
 							}
 						}
 
-						for (int i = 0; i < dao.selectByMovieName(movieNameField.getText()).size(); i++) {
+						for (int i = 0; i < dao.selectByActorName(actorNameField.getText()).size(); i++) {
 							System.out.println("영화제목");
 							model.addRow(new Object[] {
-									dao.selectByMovieName(movieNameField.getText()).get(i).getMovieNumber(),
-									dao.selectByMovieName(movieNameField.getText()).get(i).getMovieName(),
-									dao.selectByMovieName(movieNameField.getText()).get(i).getReleasedDate(),
-									dao.selectByMovieName(movieNameField.getText()).get(i).getRevenue(),
-									dao.selectByMovieName(movieNameField.getText()).get(i).getAudience(),
-									dao.selectByMovieName(movieNameField.getText()).get(i).getScreen(),
-									dao.selectByMovieName(movieNameField.getText()).get(i).getStarRating() });
+									dao.selectByMovieName(actorNameField.getText()).get(i).getMovieNumber(),
+									dao.selectByMovieName(actorNameField.getText()).get(i).getMovieName(),
+									dao.selectByMovieName(actorNameField.getText()).get(i).getReleasedDate(),
+									dao.selectByMovieName(actorNameField.getText()).get(i).getRevenue(),
+									dao.selectByMovieName(actorNameField.getText()).get(i).getAudience(),
+									dao.selectByMovieName(actorNameField.getText()).get(i).getScreen(),
+									dao.selectByMovieName(actorNameField.getText()).get(i).getStarRating() });
 						}
 					}
 				}
 			});
 
 			if (e1.getStateChange() == ItemEvent.DESELECTED) {
-				movieNameField.setEnabled(false);
-				movieNameButton.setEnabled(false);
-				releasedDate.setEnabled(true);
+				actorNameField.setEnabled(false);
+				actorNameButton.setEnabled(false);
+				birthYear.setEnabled(true);
 				SelectAll();
 			}
-		} else if (e1.getSource() == releasedDate) {
-			releasedDateField.setEnabled(true);
-			releasedDateButton.setEnabled(true);
-			movieName.setEnabled(false);
+		} else if (e1.getSource() == birthYear) {
+			birthYearField.setEnabled(true);
+			birthYearButton.setEnabled(true);
+			actorName.setEnabled(false);
 
-			releasedDateButton.addActionListener(new ActionListener() {
+			birthYearButton.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					if (e.getSource() == releasedDateButton) {
-						dao.selectByReleasedYear(releasedDateField.getText());
+					if (e.getSource() == birthYearButton) {
+						dao.selectByReleasedYear(birthYearField.getText());
 
 						if (model.getRowCount() > 0) {
 							for (int i = model.getRowCount() - 1; i > -1; i--) {
@@ -340,25 +272,25 @@ public class MovieInfo extends JFrame implements ItemListener {
 							}
 						}
 
-						for (int i = 0; i < dao.selectByReleasedYear(releasedDateField.getText()).size(); i++) {
+						for (int i = 0; i < dao.selectByReleasedYear(birthYearField.getText()).size(); i++) {
 							System.out.println("개봉일");
 							model.addRow(new Object[] {
-									dao.selectByReleasedYear(releasedDateField.getText()).get(i).getMovieNumber(),
-									dao.selectByReleasedYear(releasedDateField.getText()).get(i).getMovieName(),
-									dao.selectByReleasedYear(releasedDateField.getText()).get(i).getReleasedDate(),
-									dao.selectByReleasedYear(releasedDateField.getText()).get(i).getRevenue(),
-									dao.selectByReleasedYear(releasedDateField.getText()).get(i).getAudience(),
-									dao.selectByReleasedYear(releasedDateField.getText()).get(i).getScreen(),
-									dao.selectByReleasedYear(releasedDateField.getText()).get(i).getStarRating() });
+									dao.selectByReleasedYear(birthYearField.getText()).get(i).getMovieNumber(),
+									dao.selectByReleasedYear(birthYearField.getText()).get(i).getMovieName(),
+									dao.selectByReleasedYear(birthYearField.getText()).get(i).getReleasedDate(),
+									dao.selectByReleasedYear(birthYearField.getText()).get(i).getRevenue(),
+									dao.selectByReleasedYear(birthYearField.getText()).get(i).getAudience(),
+									dao.selectByReleasedYear(birthYearField.getText()).get(i).getScreen(),
+									dao.selectByReleasedYear(birthYearField.getText()).get(i).getStarRating() });
 						}
 					}
 				}
 			});
 
 			if (e1.getStateChange() == ItemEvent.DESELECTED) {
-				releasedDateField.setEnabled(false);
-				releasedDateButton.setEnabled(false);
-				movieName.setEnabled(true);
+				birthYearField.setEnabled(false);
+				birthYearButton.setEnabled(false);
+				actorName.setEnabled(true);
 				SelectAll();
 			}
 		}
@@ -376,13 +308,13 @@ public class MovieInfo extends JFrame implements ItemListener {
 		JLabel label;
 		
 		
-		JTextField movieNumberField;
-		JTextField movieNameField;
-		JTextField releasedDateField;
-		JTextField revenueField;
-		JTextField audienceField;
-		JTextField screenField;
-		JTextField starRatingField;
+		JTextField actorNumberField;
+		JTextField actorNameField;
+		JTextField birthYearField;
+		JTextField heightField;
+		JTextField weightField;
+		JTextField spouseField;
+		// 여기까지
 		
 		JLabel movieNumberLabel;
 		JLabel movieNameLabel;
